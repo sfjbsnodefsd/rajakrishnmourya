@@ -1,0 +1,29 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "node express js",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sfjbsnodefsd/rajakrishnmourya.git"
+  },
+  "keywords": [
+    "node",
+    "learning"
+  ],
+  "author": "Raja Krishn Mourya",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sfjbsnodefsd/rajakrishnmourya/issues"
+  },
+  "homepage": "https://github.com/sfjbsnodefsd/rajakrishnmourya#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "nodemon": "^2.0.20"
+  }
+}
