@@ -9,7 +9,7 @@ const connectDB =async (URL)=>{
                 console.log("Database error.");
                return false;;
             }
-            logger.log("Database connected successfully..");
+            logger.log("Mongodb Database connected successfully..");
             return true
     })
 } 

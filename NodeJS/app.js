@@ -3,10 +3,10 @@ const express = require('express');
 const cors = require('cors');
 const debug = require('debug');
 const db = require("./experiment/db/connect");
-
+const connection = require("./db/mysqlDB");
 const app = express();
 const PORT = process.env.PORT | 3000;
-
+const employeeRouter = require('./Routes/Employee/Employee');
 
 // addd cors policy
 app.use(cors());
@@ -17,8 +17,12 @@ app.use(express.json());
 app.get('/api/', (req,res)=>{
     res.status(200).send({msg: " in home route"})
 })
+
+app.use("/employees", employeeRouter);
+
+
 app.listen(PORT, (req,res)=>{
-     debug(`server connected on port ${PORT}`);
+     console.log(`server connected on port ${PORT}`);
 });
 
 
