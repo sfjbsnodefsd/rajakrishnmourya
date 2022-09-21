@@ -7,18 +7,22 @@ const connection = require("./db/mysqlDB");
 const app = express();
 const PORT = process.env.PORT | 3000;
 const employeeRouter = require('./Routes/Employee/Employee');
-
+const helper = require('./middlewares/helper');
+const bodyParser = require('body-parser');
+const auth = require('./middlewares/auth');
 // addd cors policy
 app.use(cors());
 
 // json middleware
-app.use(express.json());
+//app.use(express.json());
+app.use(bodyParser.json())
+app.use(helper);
 
 app.get('/api/', (req,res)=>{
     res.status(200).send({msg: " in home route"})
 })
 
-app.use("/employees", employeeRouter);
+app.use("/employees",auth, employeeRouter);
 
 
 app.listen(PORT, (req,res)=>{

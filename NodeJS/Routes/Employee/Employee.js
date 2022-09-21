@@ -2,29 +2,51 @@ const express = require('express');
 const connection = require('../../db/mysqlDB');
 const router = express.Router();
 
+// fetch all employees
 router.get("/", async (req,res)=>{
+    
+    const queries = req.query;
 
-    const query = "SELECT * FROM Employee"; 
+    let query = '';
+    if(Object.keys(queries).length){
+        let clause = '';
+        for(let [key, value] of Object.entries(queries)){
+            clause +=  `${key}='${value}' && `;
+           
+        }
+        clause= clause.slice(0,clause.lastIndexOf('&&'));
+        
+        query = `SELECT * FROM Employee WHERE ${clause} LIMIT 100`; 
+    }else{
+        query = "SELECT * FROM Employee ORDER BY Name LIMIT 100"; 
+    }
+        
     await connection.query(query, (err, result)=>{
         if(!err){
-           res.status(200).send({result});
+           return res.status(200).send({result});
+
         }
-        res.status(500).send(err);
+        return res.status(500).send(err);
     });
 
 })
-router.get("/create-table",  async (req,res)=>{
-    console.log("in post api", req.body)
-    const query = "CREATE TABLE Employee (Emp_ID INT AUTO_INCREMENT PRIMARY KEY, Name varchar(30), Company varchar(40), Salary varchar(30))"; 
+
+// create a generic table
+router.post("/create-table",  async (req,res)=>{
+
+    const {Name, body} = req.body;
+
+    const query = `CREATE TABLE ${Name} (${body.k1.col} ${body.k1.val},${body.k2.col} ${body.k2.val},${body.k3.col} ${body.k3.val})`; 
      await connection.query(query, (err, result)=>{
         if(!err){
-            res.status(201).send({msg: "table created successfully"});
+            return res.status(201).send({msg: "table created successfully"});
         }
         else{
             console.log(err);
         }
     });
 });
+// create an employee
 router.post("/employee",  async (req,res)=>{
 
     const {Emp_ID, Name, Company, Salary} = req.body;
@@ -35,13 +57,14 @@ router.post("/employee",  async (req,res)=>{
     await connection.query(query, [values], (err, result)=>{
         console.log(result);
         if(!err){
-            res.status(201).send({result});
+            return res.status(201).send({result});
         }
         else{
             console.log(err);
         }
     });
 });
+// get an employee
 router.get("/employee/:id",  async (req,res)=>{
 
     const id = req.params.id;
@@ -51,13 +74,32 @@ router.get("/employee/:id",  async (req,res)=>{
     await connection.query(query, [id], (err, result)=>{
         if(!err){
             console.log(result)
-            res.status(201).send({result});
+            return res.status(201).send({result});
         }
         else{
             console.log(err);
         }
     });
 });
+// update the employee
+router.put("/employee/:id",  async (req,res)=>{
+
+    const id = req.params.id;
+    const {Name} = req.body;
+
+    const query = `Update Employee SET Name = '${Name}' where Emp_ID = ?`; 
+
+    await connection.query(query, [+id], (err, result)=>{
+        if(!err){
+            console.log(result)
+            return res.status(200).send({result});
+        }
+        else{
+            console.log(err);
+        }
+    });
+});
+// delete an employee
 router.delete("/employee/:id",  async (req,res)=>{
 
     const id = req.params.id;
@@ -67,7 +109,22 @@ router.delete("/employee/:id",  async (req,res)=>{
     await connection.query(query, [id], (err, result)=>{
         if(!err){
             console.log(result)
-            res.status(201).send({result});
+            return  res.status(201).send({result});
+        }
+        else{
+            console.log(err);
+        }
+    });
+});
+// delete the table
+router.delete("/delete-employee-table",  async (req,res)=>{
+
+    const query = `DROP Table Employee`; 
+
+    await connection.query(query, (err, result)=>{
+        if(!err){
+            console.log(result)
+            return res.status(200).send({result});
         }
         else{
             console.log(err);
