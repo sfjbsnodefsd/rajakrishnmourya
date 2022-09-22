@@ -64,6 +64,77 @@ router.post("/employee",  async (req,res)=>{
         }
     });
 });
+// add or edit the employee using stored procedure call
+router.post("/add-employee",  async (req,res)=>{
+
+    const {Emp_ID, Name, Company, Salary} = req.body;
+
+    const query = `SET @Emp_ID =?;SET @Name =?; SET @Company=?; SET @Salary=?; \ 
+     CALL add_edit_employee(@Emp_ID,@Name,@Company,@Salary)
+    `; 
+
+    await connection.query(query, [Emp_ID, Name, Company, Salary], (err, result)=>{
+        console.log(result);
+        if(!err){
+            return res.status(201).send({result});
+        }
+        else{
+            console.log(err);
+        }
+    });
+});
+// update the employee using stored procedure call
+router.put("/update-employee",  async (req,res)=>{
+
+    const {Emp_ID, Name, Company, Salary} = req.body;
+
+    const query = " SET @Emp_ID=?; SET @Name=?; SET @Company=?; SET @Salary=?; CALL add_edit_employee(@Emp_ID,@Name,@Company,@Salary)"; 
+   
+
+    await connection.query(query, [Emp_ID, Name, Company, Salary], (err, result)=>{
+        
+        if(!err){
+            return res.status(200).send({result});
+        }
+        else{
+            console.log(err);
+        }
+    });
+});
+// update bulk employee using query...continued
+
+
+
+
+// update bulk employee using procedure call...continued
+
+// add employee in BULK using stored procedure call
+router.post("/bulk-employee",  async (req,res)=>{
+
+    console.log(req.body)
+    let vals = [];
+    // for(let body of req.body){
+    //     const {Name, Company, Salary} = body;
+    //     vals.push([Name,Comapany,Salary]);
+    // }
+    for(let body of req.body){
+        console.log(body);
+        const {Emp_ID, Name, Company, Salary} = body;
+        const query = `SET @Emp_ID=?; SET @Name =?; SET @Company=?; SET @Salary=?; \ 
+         CALL add_edit_employee(@Emp_ID,@Name,@Company,@Salary)
+        `; 
+       // const values = [Name, Company, Salary];
+        await connection.query(query, [Emp_ID, Name, Company, Salary], (err, result)=>{
+            if(!err){
+                console.log("RESULT: ",result)
+                return  res.status(201).send({result});
+            }
+            else{
+                console.log(err);
+            }
+        });
+    }
+});
 // get an employee
 router.get("/employee/:id",  async (req,res)=>{
 
