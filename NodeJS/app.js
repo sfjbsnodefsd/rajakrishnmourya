@@ -10,6 +10,7 @@ const employeeRouter = require('./Routes/Employee/Employee');
 const helper = require('./middlewares/helper');
 const bodyParser = require('body-parser');
 const auth = require('./middlewares/auth');
+const post_router = require('./experiment/routes/post');
 // addd cors policy
 app.use(cors());
 
@@ -21,6 +22,7 @@ app.use(helper);
 app.get('/api/', (req,res)=>{
     res.status(200).send({msg: " in home route"})
 })
+app.use('/api/posts', auth, post_router);
 
 app.use("/employees",auth, employeeRouter);
 
