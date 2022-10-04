@@ -1,7 +1,7 @@
 const logger  = require('../../logger');
 const mongoose = require('mongoose');
-
-const URL = "mongodb://localhost/postdb";
+require('dotenv').config();
+const URL = "process.env.MONGO_DB_CONNECTION_URL"; // | "mongodb://localhost/postdb";
 const connectDB =async (URL)=>{
     await mongoose.connect(URL,
      (err, res)=>{

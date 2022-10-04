@@ -5,12 +5,16 @@ const debug = require('debug');
 const db = require("./experiment/db/connect");
 const connection = require("./db/mysqlDB");
 const app = express();
-const PORT = process.env.PORT | 3000;
+//const PORT = process.env.PORT | 3000;
 const employeeRouter = require('./Routes/Employee/Employee');
 const helper = require('./middlewares/helper');
 const bodyParser = require('body-parser');
 const auth = require('./middlewares/auth');
 const post_router = require('./experiment/routes/post');
+const course_router = require('./Courses/course');
+const user_router = require('./Routes/Users/user.routes')
+
+require('dotenv').config();
 // addd cors policy
 app.use(cors());
 
@@ -26,9 +30,14 @@ app.use('/api/posts', auth, post_router);
 
 app.use("/employees",auth, employeeRouter);
 
+// courses. mini project routes handling..
 
-app.listen(PORT, (req,res)=>{
-     console.log(`server connected on port ${PORT}`);
+app.use("/api/courses",auth, course_router);
+
+app.use("/api/users",auth, user_router);
+
+app.listen(process.env.PORT, (req,res)=>{
+     console.log(`server connected on port ${process.env.PORT}`);
 });
 
 
